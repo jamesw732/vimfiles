@@ -30,6 +30,8 @@ nmap <C-Right> w
 nmap <F5> <Esc>:w<CR>:!python % [filename.py]; <CR>
 
 " https://github.com/junegunn/vim-plug
+" :PlugInstall
+" :PlugUpdate
 
 call plug#begin()
 
@@ -37,6 +39,7 @@ Plug 'https://github.com/joshdick/onedark.vim'
 Plug 'https://github.com/tpope/vim-surround'
 Plug 'https://github.com/tpope/vim-commentary'
 Plug 'https://github.com/frazrepo/vim-rainbow'
+Plug 'https://github.com/JuliaEditorSupport/julia-vim'
 
 Plug 'lervag/vimtex'
 
