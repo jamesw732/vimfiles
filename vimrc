@@ -16,7 +16,6 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
 
-" If a hard to understand issue arises, remove h and l from this
 set whichwrap+=<,>,[,],h,l
 set backspace=indent,eol,start
 set number
@@ -42,7 +41,6 @@ syntax on
 " Remember position when opening vim
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-nmap <F5> <Esc>:w<CR>:!python % [filename.py]; <CR>
 inoremap {<CR> {<CR>}<Esc><<O
 " inoremap ( ()<Esc>i
 " inoremap () ()
@@ -53,6 +51,7 @@ let g:UltiSnipsJumpForwardTrigger = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 
 au FileType cpp,py call rainbow#load()
+au FileType c,cpp set cinoptions=:4,l1
 
 let g:vimtex_syntax_conceal_disable = 1
 let g:vimtex_view_method = 'zathura'
@@ -95,12 +94,13 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <leader>a :LspCodeAction<CR>
     nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
     nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
     let g:lsp_format_sync_timeout = 1000
     autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-  
+
     " refer to doc to add more commands
 endfunction
 
@@ -120,6 +120,18 @@ if executable('pyls')
         \ 'allowlist': ['python'],
         \ })
 endif
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
+
+
+command! -nargs=? Run call Run(<f-args>)
+function! Run(...)
+    let l:path = findfile("run.sh", '.;')
+    if l:path == ""
+        echo "No run.sh found in parent directories"
+        return
+    endif
+    let l:args = join(a:000, ' ')
+    execute "!" l:path l:args
+endfunction
+
+nnoremap <F5> <Esc>:w<CR>:Run<CR>
